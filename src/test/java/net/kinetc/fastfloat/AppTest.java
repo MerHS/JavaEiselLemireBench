@@ -1,6 +1,12 @@
 package net.kinetc.fastfloat;
 
+import org.apache.commons.io.IOUtils;
+
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Test;
 
@@ -8,7 +14,9 @@ import org.junit.Test;
  * Unit test for simple App.
  */
 public class AppTest {
-    final static String[] floats = { "1245.6333e-2", "12.5", "-23561.4324e5", "0.235E4", "123535.35226783411112E-4",
+    final static String[] rawFloats = {
+            "33408",
+            "1245.6333e-2", "12.5", "-23561.4324e5", "0.235E4", "123535.35226783411112E-4",
             "123535.3522678341111E-4", "123535.352267834111E-4", "-123535.3522678341111E-4",
             "-123535.35226783411111E-4", "-123535.352267834111111E-4", "-1465678684576765.4353e1", "0.00001",
             "-0.000000000000000000000000045346", "1451.6743435e-5", "34524.62436", "-763457.2435",
@@ -21,14 +29,36 @@ public class AppTest {
             "111111111111111111111111111111111111.11111111111111111111111111e-2",
             "000000000000.00000000000000000000000000000000", "-1.0e3", "0.0", "0.0E3", "345264.6835e3" };
 
-    @Test
-    public void parseTest() {
-        for (int i = 0; i < floats.length; i++) {
-            assertTrue(
-                    floats[i] + " wrong:" + Double.parseDouble(floats[i]) + " / " + EiselLemire.parseDouble(floats[i]),
-                    Double.parseDouble(floats[i]) == EiselLemire.parseDouble(floats[i]));
+    protected void testFloatStrings(String[] floats) {
+        for (String fstr : floats) {
+            double javaFloat = Double.parseDouble(fstr);
+            double eisel = EiselLemire.parseDouble(fstr);
 
+            assertTrue("parse error on " + (i + 1) + "th '" + fstr + "':\n  java: " + javaFloat + " != eisel: " + eisel,
+                    javaFloat == eisel);
         }
+    }
 
+    protected void runTestFile(String path) throws IOException {
+        InputStream stream = this.getClass().getResourceAsStream(path);
+        assertFalse(path + " does not exist.", stream == null);
+
+        String testFile = IOUtils.toString(stream, "UTF-8");
+        String[] floats = testFile.split("\\r?\\n");
+
+        testFloatStrings(floats);
+    }
+
+    @Test
+    public void basicParseTest() {
+        testFloatStrings(rawFloats);
+    }
+
+    @Test
+    public void resourceTest() throws IOException {
+        runTestFile("/canada.txt");
+        runTestFile("/error.txt");
+        runTestFile("/mesh.txt");
+        runTestFile("/synthetic.txt");
     }
 }
