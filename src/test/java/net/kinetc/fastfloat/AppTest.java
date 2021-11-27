@@ -30,7 +30,8 @@ public class AppTest {
             "000000000000.00000000000000000000000000000000", "-1.0e3", "0.0", "0.0E3", "345264.6835e3" };
 
     protected void testFloatStrings(String[] floats) {
-        for (String fstr : floats) {
+        for (int i = 0; i < floats.length; i++) {
+            String fstr = floats[i];
             double javaFloat = Double.parseDouble(fstr);
             double eisel = EiselLemire.parseDouble(fstr);
 
