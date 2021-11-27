@@ -51,7 +51,7 @@ public class App {
 
         System.out.println("running built-in parseDouble...");
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             for (String fstr : floats) {
                 double d = Double.parseDouble(fstr);
             }
@@ -67,7 +67,7 @@ public class App {
 
         System.out.println("running Eisel-Lemire parseDouble...");
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             for (String fstr : floats) {
                 double d = EiselLemire.parseDouble(fstr);
             }
@@ -112,7 +112,7 @@ public class App {
 
         double builtTP = floats.size() / (builtMean / 1000000.0);
         double builtBytes = bytes * 1000 / builtMean;
-        System.out.println(String.format("  <THROUGHPUT> %.3f KFloats/s, %.3f MB/s\n", builtTP, builtBytes));
+        System.out.println(String.format("  <THROUGHPUT> %.3f Kops/s, %.3f MB/s\n", builtTP, builtBytes));
 
         System.out.println("Eisel-Lemire parseDouble:");
         System.out.println(
@@ -121,6 +121,6 @@ public class App {
 
         double eiselTP = floats.size() / (eiselMean / 1000000.0);
         double eiselBytes = bytes * 1000 / eiselMean;
-        System.out.println(String.format("  <THROUGHPUT> %.3f KFloats/s, %.3f MB/s", eiselTP, eiselBytes));
+        System.out.println(String.format("  <THROUGHPUT> %.3f Kops/s, %.3f MB/s", eiselTP, eiselBytes));
     }
 }
