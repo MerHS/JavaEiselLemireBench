@@ -35,7 +35,7 @@ public class App {
 
         System.out.println(String.format("Test %s (%d floats)\n", args[0], floats.size()));
 
-        System.out.println("--- warm up 5 times ---");
+        System.out.println("warm up 10 times...");
 
         for (int i = 0; i < 5; i++) {
             for (String fstr : floats) {
@@ -98,17 +98,30 @@ public class App {
         }
 
         double builtMean = builtinTotal / 1000.0;
+        double builtSD = 0;
+
+        for (long t : builtinTimes) {
+            builtSD += Math.pow(t - builtMean, 2);
+        }
+        builtSD = Math.sqrt(builtSD / 1000.0);
 
         for (long t : eiselTimes) {
             eiselTotal += t;
         }
 
         double eiselMean = eiselTotal / 1000.0;
+        double eiselSD = 0;
+
+        for (long t : eiselTimes) {
+            eiselSD += Math.pow(t - eiselMean, 2);
+        }
+        eiselSD = Math.sqrt(eiselSD / 1000.0);
 
         System.out.println("built-in parseDouble:");
         System.out.println(
-                String.format("  <TIME per file> mean: %.3f ms, min: %.3f ms, max: %.3f ms", builtMean / 1000000.0,
-                        builtinTimes[0] / 1000000.0, builtinTimes[999] / 1000000.0));
+                String.format("  <TIME per file> mean: %.3f ms, min: %.3f ms, max: %.3f ms, stddev: %.3f ms",
+                        builtMean / 1000000.0,
+                        builtinTimes[0] / 1000000.0, builtinTimes[999] / 1000000.0, builtSD / 1000000.0));
 
         double builtTP = floats.size() / (builtMean / 1000000.0);
         double builtBytes = bytes * 1000 / builtMean;
@@ -116,8 +129,9 @@ public class App {
 
         System.out.println("Eisel-Lemire parseDouble:");
         System.out.println(
-                String.format("  <TIME per file> mean: %.3f ms, min: %.3f ms, max: %.3f ms", eiselMean / 1000000.0,
-                        eiselTimes[0] / 1000000.0, eiselTimes[999] / 1000000.0));
+                String.format("  <TIME per file> mean: %.3f ms, min: %.3f ms, max: %.3f ms, stddev: %.3f ms",
+                        eiselMean / 1000000.0,
+                        eiselTimes[0] / 1000000.0, eiselTimes[999] / 1000000.0, eiselSD / 1000000.0));
 
         double eiselTP = floats.size() / (eiselMean / 1000000.0);
         double eiselBytes = bytes * 1000 / eiselMean;
